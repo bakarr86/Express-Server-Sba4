@@ -24,3 +24,31 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
+// Custom Error class
+class AppError extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+      this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+      this.isOperational = true;
+  
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+  
+  // Custom middleware: Authentication
+  const authenticate = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return next(new AppError('No token provided', 401));
+    }
+  
+    try {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, 'your_jwt_secret');
+      req.userData = decoded;
+      next();
+    } catch (error) {
+      return next(new AppError('Authentication failed', 401));
+    }
+  };
