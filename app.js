@@ -175,3 +175,20 @@ app.post('/posts/:id/comment', (req, res) => {
 });
 
 //-----------------------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------------------------------------
+app.post('/posts/:id', (req, res) => { /// this is to delete a post
+  const posts = getFromLocalStorage('posts');
+  const postIndex = posts.findIndex(post => post.id === parseInt(req.params.id));
+  
+  if (postIndex !== -1) {
+    posts.splice(postIndex, 1);
+    setToLocalStorage('posts', posts);
+    res.redirect('/comments'); // Redirect back to the comments page
+  } else {
+    res.status(404).send('Post not found');
+  }
+});
+//---------------Creatin a post-----------------------------------------------------------------------------------------------
