@@ -100,3 +100,9 @@ app.post('/login', async (req, res, next) => {
 
     // Redirect to comment page and pass username to the template
     res.locals.username = user.username;
+
+    return res.redirect('/CreatePost');
+  } catch (error) {
+    next(new AppError('Error logging in', 400));
+  }
+});
