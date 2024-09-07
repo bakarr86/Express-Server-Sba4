@@ -131,3 +131,47 @@ app.get('/posts', (req, res) => {
 
   res.render('post', { posts });
 });
+
+
+//--------------------ADD COMMENT TO POST----------------------------------------------
+app.post('/posts/:id/comment', (req, res) => {
+  const postId = parseInt(req.params.id); // Convert postId to a number
+  const comment = req.body.comment; // Assuming the form sends the comment data with this key
+
+  // Log the incoming data
+  console.log(req.body, postId);
+
+  // Fetch the posts from local storage
+  let posts = getFromLocalStorage('posts');
+
+  // Check if posts are retrieved correctly
+  if (!posts || !Array.isArray(posts)) {
+    return res.status(500).send('No posts found');
+  }
+
+  // Find the specific post by its ID (since postId is now a number)
+  const postIndex = posts.findIndex(post => post.id === postId);
+
+  if (postIndex !== -1) {
+    // Ensure the post has a comments array
+    if (!posts[postIndex].comments) {
+      posts[postIndex].comments = [];
+    }
+
+    // Add the new comment
+    posts[postIndex].comments.push({
+      id: new Date().getTime(), // Unique ID for the comment
+      content: comment
+    });
+
+    // Save the updated posts back to local storage
+    setToLocalStorage('posts', posts);
+
+    // Redirect back to the post page or send a response
+    res.redirect('/posts');
+  } else {
+    res.status(404).send('Post not found');
+  }
+});
+
+//-----------------------------------------------------------------------------------------------
