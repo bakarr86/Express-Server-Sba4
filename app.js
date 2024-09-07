@@ -82,3 +82,21 @@ app.post('/login', async (req, res, next) => {
 
     // Find the user by username
     let user = users.find(u => u.username === username);
+    // If user doesn't exist, create a new one
+    if (!user) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user = { id: users.length + 1, username, password: hashedPassword };
+      users.push(user);
+      setToLocalStorage('users', users);
+    } else {
+      const isPasswordCorrect = await bcrypt.compare(password, user.password);
+      if (!isPasswordCorrect) {
+        return next(new AppError('Incorrect password', 401));
+      }
+    }
+
+    // Generate JWT token (optional, for other uses)
+    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+
+    // Redirect to comment page and pass username to the template
+    res.locals.username = user.username;
