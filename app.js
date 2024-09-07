@@ -52,3 +52,13 @@ class AppError extends Error {
       return next(new AppError('Authentication failed', 401));
     }
   };
+
+  // Helper functions for localStorage
+const getFromLocalStorage = (key) => {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : [];
+};
+
+const setToLocalStorage = (key, data) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
