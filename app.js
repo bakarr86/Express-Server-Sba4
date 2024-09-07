@@ -191,4 +191,47 @@ app.post('/posts/:id', (req, res) => { /// this is to delete a post
     res.status(404).send('Post not found');
   }
 });
+
+
 //---------------Creatin a post-----------------------------------------------------------------------------------------------
+app.get('/CreatePost', (req, res) => {
+  // Fetch posts from local storage
+  let posts = getFromLocalStorage('posts', []);
+
+  // Pass both the username and the posts array to the template
+  res.render('index', { posts });
+});
+
+
+app.post('/CreatePost', (req, res) => {
+  const { title, content, author } = req.body; // Get post data from the form
+
+  // Fetch the current posts from local storage
+  let posts = getFromLocalStorage('posts');
+
+  // Ensure posts is an array
+  if (!posts || !Array.isArray(posts)) {
+    posts = [];
+  }
+
+  // Create a new post object
+  const newPost = {
+    id: new Date().getTime(), // Unique ID based on timestamp
+    title: title,
+    content: content,
+    author: author,
+    comments: [] // Initialize an empty comments array
+  };
+
+  // Add the new post to the posts array
+  posts.push(newPost);
+
+  // Save the updated posts back to local storage
+  setToLocalStorage('posts', posts);
+
+  // Redirect to the posts page or send a success response
+  res.redirect('/posts'); // Redirect back to the posts page
+});
+
+
+//---------------------------------------------------------------------------
