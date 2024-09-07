@@ -106,3 +106,28 @@ app.post('/login', async (req, res, next) => {
     next(new AppError('Error logging in', 400));
   }
 });
+
+
+// Posts-------------------------------------------------------------------------------------------
+app.get('/posts', (req, res) => {
+  let posts = getFromLocalStorage('posts');
+
+  // Ensure every post has a comments array
+  posts = posts.map(post => ({
+    ...post,
+    comments: post.comments || []
+  }));
+
+  if (req.query.title) {
+    posts = posts.filter(post =>
+      post.title.toLowerCase().includes(req.query.title.toLowerCase())
+    );
+  }
+
+  if (req.query.author) {
+    posts = posts.filter(post =>
+      post.author.toLowerCase() === req.query.author.toLowerCase())
+  }
+
+  res.render('post', { posts });
+});
