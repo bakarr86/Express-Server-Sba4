@@ -169,6 +169,14 @@
                     // Optionally, store the token or redirect the user
                     localStorage.setItem('token', data.token); // Save the token in local storage
                     window.location.href = '/'; // Redirect to home page
+                }else {
+                    const error = await response.json();
+                    alert(`Error: ${error.message}`);
                 }
+            } catch (error) {
+                console.error('Login failed:', error);
+            }
+        });
+    </script>
 </body>
 </html>
