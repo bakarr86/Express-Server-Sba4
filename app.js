@@ -235,3 +235,12 @@ app.post('/CreatePost', (req, res) => {
 
 
 //---------------------------------------------------------------------------
+
+app.get('/', (req, res) => {
+  const posts = getFromLocalStorage('posts');
+  res.render('index', { posts });
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
