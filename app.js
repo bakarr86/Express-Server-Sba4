@@ -62,3 +62,23 @@ const getFromLocalStorage = (key) => {
 const setToLocalStorage = (key, data) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
+
+// log in section
+app.post('/login', async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    let users = getFromLocalStorage('users');
+
+    // Default user credentials
+    const defaultUsername = 'admin';
+    const defaultPassword = 'password123';
+
+    // If no users are stored, create a default user
+    if (users.length === 0) {
+      const hashedDefaultPassword = await bcrypt.hash(defaultPassword, 10);
+      users = [{ id: 1, username: defaultUsername, password: hashedDefaultPassword }];
+      setToLocalStorage('users', users);
+    }
+
+    // Find the user by username
+    let user = users.find(u => u.username === username);
