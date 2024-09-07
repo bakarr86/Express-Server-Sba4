@@ -162,5 +162,13 @@
                     },
                     body: JSON.stringify({ username, password }) // Send login data
                 });
+                // Handle the response
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Login successful!');
+                    // Optionally, store the token or redirect the user
+                    localStorage.setItem('token', data.token); // Save the token in local storage
+                    window.location.href = '/'; // Redirect to home page
+                }
 </body>
 </html>
