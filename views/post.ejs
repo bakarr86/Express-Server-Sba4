@@ -145,5 +145,12 @@ form button:hover {
       <p>No posts found.</p>
     <% } %>
   </div>  
+  <script>
+    // Toggle comment form visibility
+    function toggleCommentForm(postId) {
+      const form = document.getElementById('commentForm-' + postId);
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>
